@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
-import RNPickerSelect from 'react-native-picker-select';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Picker } from 'react-native';
+
 const Converter = () => {
   const [inputValue, setInputValue] = useState('');
   const [selectedUnit, setSelectedUnit] = useState('km');
   const [convertedValue, setConvertedValue] = useState('');
   const [unitType, setUnitType] = useState('distance');
+
   const convertUnits = () => {
     const value = parseFloat(inputValue);
     if (isNaN(value)) {
@@ -36,6 +37,7 @@ const Converter = () => {
     }
     setConvertedValue(result.toFixed(2));
   };
+
   return (
     <View style={styles.container}>
       <Text style={styles.header}>Unit Converter</Text>
@@ -46,33 +48,31 @@ const Converter = () => {
         value={inputValue}
         onChangeText={(text) => setInputValue(text)}
       />
-      <RNPickerSelect
-        placeholder={{ label: 'Select Type', value: null }}
+      <Picker
+        selectedValue={unitType}
         onValueChange={(value) => setUnitType(value)}
-        items={[
-          { label: 'Distance', value: 'distance' },
-          { label: 'Weight', value: 'weight' },
-        ]}
-        style={{
-          inputIOS: styles.pickerInput,
-          inputAndroid: styles.pickerInput,
-        }}
-      />
-      <RNPickerSelect
-        placeholder={{ label: 'Select Unit', value: null }}
+        style={styles.pickerInput}
+      >
+        <Picker.Item label="Distance" value="distance" />
+        <Picker.Item label="Weight" value="weight" />
+      </Picker>
+      <Picker
+        selectedValue={selectedUnit}
         onValueChange={(value) => setSelectedUnit(value)}
-        items={unitType === 'distance' ? [
-          { label: 'Kilometers (km)', value: 'km' },
-          { label: 'Miles (mi)', value: 'mi' },
-        ] : [
-          { label: 'Kilograms (kg)', value: 'kg' },
-          { label: 'Pounds (lbs)', value: 'lbs' },
-        ]}
-        style={{
-          inputIOS: styles.pickerInput,
-          inputAndroid: styles.pickerInput,
-        }}
-      />
+        style={styles.pickerInput}
+      >
+        {unitType === 'distance' ? (
+          <>
+            <Picker.Item label="Kilometers (km)" value="km" />
+            <Picker.Item label="Miles (mi)" value="mi" />
+          </>
+        ) : (
+          <>
+            <Picker.Item label="Kilograms (kg)" value="kg" />
+            <Picker.Item label="Pounds (lbs)" value="lbs" />
+          </>
+        )}
+      </Picker>
       <TouchableOpacity style={styles.convertButton} onPress={convertUnits}>
         <Text style={styles.convertButtonText}>Convert</Text>
       </TouchableOpacity>
@@ -80,6 +80,7 @@ const Converter = () => {
     </View>
   );
 };
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -106,7 +107,6 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     color: 'white',
     marginBottom: 20,
-    padding: 10,
   },
   convertButton: {
     backgroundColor: '#2980b9',
@@ -123,4 +123,40 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
 });
+
 export default Converter;
+
+
+
+App.json
+
+{
+  "expo": {
+    "name": "UnitConverter",
+    "slug": "UnitConverter",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": true
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#ffffff"
+      }
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    }
+  }
+}
